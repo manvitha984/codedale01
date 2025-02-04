@@ -18,12 +18,43 @@ router.post("/", auth, async (req, res) => {
     res.status(500).json({ msg: "Server error" });
   }
 });
-router.get("/:formId", async (req, res) => {
+
+// Place this route before any parameterized routes (like "/:formId")
+router.get("/myforms", auth, async (req, res) => {
+    try {
+      const forms = await Form.find({ author: req.user.id });
+      res.json(forms);
+    } catch (err) {
+      console.error("Error in /myforms:", err);
+      res.status(500).json({ msg: "Server error" });
+    }
+  });
+
+  router.route("/:formId")
+  // GET: Retrieve a form for rendering the fill-out page
+  .get(async (req, res) => {
     const { formId } = req.params;
     try {
       const form = await Form.findById(formId);
       if (!form) return res.status(404).json({ msg: "Form not found" });
       res.json(form);
+    } catch (err) {
+      res.status(500).json({ msg: "Server error" });
+    }
+  })
+  // PUT: Update the form (requires authentication)
+  .put(auth, async (req, res) => {
+    const { formId } = req.params;
+    const { title, fields } = req.body;
+    try {
+      const updatedForm = await Form.findByIdAndUpdate(
+        formId,
+        { title, fields },
+        { new: true }
+      );
+      if (!updatedForm)
+        return res.status(404).json({ msg: "Form not found" });
+      res.json(updatedForm);
     } catch (err) {
       res.status(500).json({ msg: "Server error" });
     }
