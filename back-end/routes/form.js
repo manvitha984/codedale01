@@ -3,7 +3,21 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const Form = require("../models/Forms");
 const FormResponse = require("../models/FormResponse");
-
+router.get("/myformswithresponses", auth, async (req, res) => {
+    try {
+      const forms = await Form.find({ author: req.user.id });
+      const formsWithResponses = await Promise.all(
+        forms.map(async (form) => {
+          const responses = await FormResponse.find({ form: form._id });
+          return { ...form._doc, responses };
+        })
+      );
+      res.json(formsWithResponses);
+    } catch (err) {
+      console.error("Error fetching forms and responses", err);
+      res.status(500).json({ msg: "Server error" });
+    }
+  });
 router.post("/", auth, async (req, res) => {
   const { title, fields } = req.body;
   try {

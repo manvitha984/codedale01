@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
+import { CSVLink } from "react-csv";
 import { 
   FaHeading, FaUser, FaEnvelope, FaHome, FaPhone, FaCalendarAlt, FaTextHeight,
   FaAlignLeft, FaList, FaDotCircle, FaCheckSquare, FaHashtag, FaImage, FaFileUpload,
@@ -12,6 +13,7 @@ export default function Response() {
   const [selectedForm, setSelectedForm] = useState(null);
   const [activeTab, setActiveTab] = useState("edit");
   const [responses, setResponses] = useState([]);
+  const [csvData, setCsvData] = useState([]);
   const { auth } = useContext(AuthContext);
   const REACT_APP_API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
@@ -59,6 +61,11 @@ export default function Response() {
             }
           );
           setResponses(res.data);
+          const csvData = res.data.map(response => ({
+            ...response.responses,
+            responseId: response._id
+          }));
+          setCsvData(csvData);
         } catch (err) {
           console.error("Error fetching responses", err);
         }
@@ -148,6 +155,16 @@ export default function Response() {
               <h3 className="text-xl font-semibold mb-2 text-gray-800">
                 {form.title}
               </h3>
+              {form._id && (
+                <a
+                  href={`${window.location.origin}/form/${form._id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline break-all"
+                >
+                  Link to the form
+                </a>
+              )}
             </div>
           ))}
         </div>
@@ -158,37 +175,37 @@ export default function Response() {
   return (
     <div className="min-h-screen bg-[#FFF8F8] p-8">
       <button
-  onClick={() => setSelectedForm(null)}
-  className="mb-4 px-4 py-2 bg-[#FE6059] rounded hover:bg-red-600 text-white font-medium transition-colors"
->
-  &larr; Back to My Forms
-</button>
+        onClick={() => setSelectedForm(null)}
+        className="mb-4 px-4 py-2 bg-[#FE6059] rounded hover:bg-red-600 text-white font-medium transition-colors"
+      >
+        &larr; Back to My Forms
+      </button>
       <div className="bg-white shadow rounded-lg p-8">
         <h2 className="text-3xl font-bold mb-4 text-gray-800">
           {selectedForm.title}
         </h2>
         {/* Tabs */}
         <div className="flex space-x-4 mb-6">
-        <button
-  onClick={() => setActiveTab("edit")}
-  className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-    activeTab === "edit"
-      ? "bg-[#FE6059] text-white"
-      : "bg-gray-200 text-gray-800"
-  }`}
->
-  Edit Form
-</button>
-<button
-  onClick={() => setActiveTab("view")}
-  className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-    activeTab === "view"
-      ? "bg-[#FE6059] text-white"
-      : "bg-gray-200 text-gray-800"
-  }`}
->
-  View Responses
-</button>
+          <button
+            onClick={() => setActiveTab("edit")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+              activeTab === "edit"
+                ? "bg-[#FE6059] text-white"
+                : "bg-gray-200 text-gray-800"
+            }`}
+          >
+            Edit Form
+          </button>
+          <button
+            onClick={() => setActiveTab("view")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+              activeTab === "view"
+                ? "bg-[#FE6059] text-white"
+                : "bg-gray-200 text-gray-800"
+            }`}
+          >
+            View Responses
+          </button>
         </div>
         {/* Tab Content */}
         {activeTab === "edit" && (
@@ -392,31 +409,41 @@ export default function Response() {
             {responses.length === 0 ? (
               <p className="text-gray-600">No responses yet for this form.</p>
             ) : (
-              <div className="grid grid-cols-1 gap-6">
-                {responses.map((response) => (
-                  <div
-                    key={response._id}
-                    className="border p-4 bg-white rounded shadow"
-                  >
-                    <h4 className="font-bold mb-2 text-gray-800">
-                      Response ID: {response._id}
-                    </h4>
-                    {response.responses && typeof response.responses === "object" ? (
-                      <div className="space-y-1">
-                        {Object.entries(response.responses).map(([field, value]) => (
-                          <div key={field} className="flex">
-                            <span className="font-semibold mr-2 text-gray-700">
-                              {field}:
-                            </span>
-                            <span className="text-gray-600">{value}</span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-gray-600">No data provided</p>
-                    )}
-                  </div>
-                ))}
+              <div>
+                <div className="grid grid-cols-1 gap-6">
+                  {responses.map((response) => (
+                    <div
+                      key={response._id}
+                      className="border p-4 bg-white rounded shadow"
+                    >
+                      <h4 className="font-bold mb-2 text-gray-800">
+                        Response ID: {response._id}
+                      </h4>
+                      {response.responses && typeof response.responses === "object" ? (
+                        <div className="space-y-1">
+                          {Object.entries(response.responses).map(([field, value]) => (
+                            <div key={field} className="flex">
+                              <span className="font-semibold mr-2 text-gray-700">
+                                {field}:
+                              </span>
+                              <span className="text-gray-600">{value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-gray-600">No data provided</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <br />
+                <CSVLink
+                  data={csvData}
+                  filename={`${selectedForm.title}_responses.csv`}
+                  className="mt-4 px-4 py-2 bg-[#FE6059] text-white font-medium rounded-md hover:bg-red-600"
+                >
+                  Export as CSV
+                </CSVLink>
               </div>
             )}
           </div>

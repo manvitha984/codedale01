@@ -1,20 +1,11 @@
-// frontend/src/context/AuthContext.jsx
+import React, { createContext, useState, useEffect } from 'react';
 
-import React, { createContext, useState } from 'react';
-
-// Create an authentication context using createContext.
 export const AuthContext = createContext();
-
-// Create an AuthProvider component to manage authentication state:
-// Initializes the token and isAuthenticated state variables.
-// Provides login and logout functions to update the authentication state.
-// Stores the token in local storage to persist the user's login status.
-// Renders the children components within the AuthContext.Provider.
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
     token: localStorage.getItem('token'),
-    isAuthenticated: false,
+    isAuthenticated: !!localStorage.getItem('token')
   });
 
   const login = (token) => {
@@ -31,5 +22,5 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{ auth, login, logout }}>
       {children}
     </AuthContext.Provider>
-  );
+  );
 };
