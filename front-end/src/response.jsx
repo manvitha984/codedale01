@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
+import create from "./assets/2842708.jpg";
 import { CSVLink } from "react-csv";
 import { 
   FaHeading, FaUser, FaEnvelope, FaHome, FaPhone, FaCalendarAlt, FaTextHeight,
@@ -141,7 +142,12 @@ export default function Response() {
     return (
       <div className="min-h-screen bg-[#FFF8F8] p-8">
         <h2 className="text-3xl font-bold text-center mb-8">My Forms</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <img
+                  src={create}
+                  alt="Dashboard Illustration"
+                  className="mt-6 w-full max-w-md mx-auto rounded-lg shadow-md"
+                />
+        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {forms.map((form) => (
             <div
               key={form._id}
@@ -157,13 +163,13 @@ export default function Response() {
               </h3>
               {form._id && (
                 <a
-                  href={`${window.location.origin}/form/${form._id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline break-all"
-                >
-                  Link to the form
-                </a>
+                href={`${window.location.origin}/form/${form._id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mt-2 text-blue-600 font-semibold px-3 py-1 border-b-2 border-blue-600 rounded hover:bg-blue-50 transition-colors"
+              >
+                Link to the form
+              </a>
               )}
             </div>
           ))}

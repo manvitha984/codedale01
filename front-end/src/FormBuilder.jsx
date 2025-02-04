@@ -87,7 +87,6 @@ export default function FormBuilder() {
       <div className="w-1/4 p-4 bg-white shadow-md">
         <h2 className="text-xl font-bold text-gray-900 mb-4">Components</h2>
         {[
-          { type: "Heading", icon: <FaHeading /> },
           { type: "Fullname", icon: <FaUser /> },
           { type: "Email", icon: <FaEnvelope /> },
           { type: "Address", icon: <FaHome /> },
@@ -102,7 +101,6 @@ export default function FormBuilder() {
           { type: "Image", icon: <FaImage /> },
           { type: "File upload", icon: <FaFileUpload /> },
           { type: "Time", icon: <FaClock /> },
-          { type: "Submit", icon: <FaPaperPlane /> },
         ].map((field) => (
           <button
             key={field.type}
@@ -146,6 +144,7 @@ export default function FormBuilder() {
                   type="text"
                   placeholder="Full Name"
                   className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  disabled
                 />
               )}
               {field.type === "Email" && (
@@ -153,6 +152,7 @@ export default function FormBuilder() {
                   type="email"
                   placeholder="Email"
                   className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  disabled
                 />
               )}
               {field.type === "Address" && (
@@ -160,6 +160,7 @@ export default function FormBuilder() {
                   type="text"
                   placeholder="Address"
                   className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  disabled
                 />
               )}
               {field.type === "Phone" && (
@@ -167,12 +168,14 @@ export default function FormBuilder() {
                   type="tel"
                   placeholder="Phone"
                   className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  disabled
                 />
               )}
               {field.type === "Date picker" && (
                 <input
                   type="date"
                   className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  disabled
                 />
               )}
               {field.type === "Short text" && (
@@ -180,12 +183,14 @@ export default function FormBuilder() {
                   type="text"
                   placeholder="Short Text"
                   className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  disabled
                 />
               )}
               {field.type === "Long text" && (
                 <textarea
                   placeholder="Long Text"
                   className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  disabled
                 />
               )}
               {field.type === "Drop down" && (
@@ -251,6 +256,7 @@ export default function FormBuilder() {
                   type="number"
                   placeholder="Number"
                   className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  disabled
                 />
               )}
               {field.type === "Image" && (
@@ -258,18 +264,21 @@ export default function FormBuilder() {
                   type="file"
                   accept="image/*"
                   className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  disabled
                 />
               )}
               {field.type === "File upload" && (
                 <input
                   type="file"
                   className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  disabled
                 />
               )}
               {field.type === "Time" && (
                 <input
                   type="time"
                   className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  disabled
                 />
               )}
             </div>
